@@ -2,18 +2,18 @@ const mongoose = require("mongoose");
 
 const financaSchema = new mongoose.Schema(
   {
-    saldo: {
+    checkingAccountAmount: {
       type: Number,
       required: false,
     },
-    investimentos: {
+    positions: {
       type: Array,
       required: false,
-    },
-    patrimonioSumarizado: {
-      type: Number,
-      required: false,      
     }
+    // consolidated: {
+    //   type: Number,
+    //   required: false,      
+    // }
   },
   {
     timestamps: true,

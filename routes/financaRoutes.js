@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../app/controllers/financaController.js');
+const controller = require('../app/controllers/financeController.js');
 
-router.get('/financas', controller.getDadosFinanca);
-router.post('/financas', controller.postDadosFinanca);
-router.patch('/financas', controller.patchDadosFinanca);
-router.delete('/financas', controller.deleteDadosFinanca);
+router.get('/financas', controller.getFinanceData);
+router.post('/financas', controller.postFinanceData);
+router.patch('/financas', controller.patchFinanceData);
+router.delete('/financas', controller.deleteFinanceData);
 
 module.exports = router;
