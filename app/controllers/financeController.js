@@ -20,10 +20,10 @@ const getFinanceData = async (req, res) => {
 const postFinanceData = async (req, res) => {
   try {
     const requestPayload = req.body;
-    const hasFinanca = await financeService.getFinance();
+    const hasFinance = await financeService.getFinance();
 
-    if(hasFinanca.length)
-      throw new Error("Já tem financa criada");
+    if(hasFinance.length)
+      throw new Error("Finance already created!");
       
     const payloadResponse = await financeService.postFinance(requestPayload);
 

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const financaSchema = new mongoose.Schema(
+const financeSchema = new mongoose.Schema(
   {
     checkingAccountAmount: {
       type: Number,
@@ -20,4 +20,4 @@ const financaSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Financa', financaSchema)
+module.exports = mongoose.model('Finance', financeSchema)
