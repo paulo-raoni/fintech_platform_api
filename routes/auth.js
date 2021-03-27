@@ -1,57 +1,68 @@
 const router = require("express").Router();
 const controller = require("../app/controllers/authController");
 const User = require("../app/models/user");
-const passport = require("passport");
+const {
+  registerValidators,
+  validateFields,
+} = require("../app/validators/authValidator");
 
-const authenticateAfterLogin = passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/login'
+const {
+  authRequired,
+  authenticateAfterLogin,
+  authenticateAfterRegister,
+} = require("../app/lib/authUtils");
+
+router.get("/home", authRequired, (req, res) => {
+  res.status(200).send({ message: "You are at HOME PAGE!" });
 });
 
-const authenticateAfterRegister = passport.authenticate("local", {
-    successRedirect: "/home",
+router.get("/login", authRequired, (req, res) => {
+  if(req.user) {
+    req.logout(); //logout to prevent login after register
+  }
+  res.status(200).send({ message: "You are at LOGIN PAGE!" });
 });
 
-const authRequired = (req, res, next) => {
-    if (req.user) {
-        next();
+router.get("/register", authRequired, (req, res)=>{
+  res.status(200).send({ response: "You are at REGISTER!" });
+});
+
+router.post(
+  "/register",
+  registerValidators(),
+  (req, res, next) => {
+    const { body } = req;
+    const user = new User({
+      username: body.username,
+      password: body.password,
+      cpf: body.cpf,
+    });
+
+    // Validator using express-validator
+    const errorList = validateFields(req);
+
+    if (errorList.length) {
+      res.status(400).send({ errorList });
     } else {
-        res.status(401).send({ message: "Unauthorized!" });
+      user.save((err) => {
+        if(err) {
+          console.log("There was an error on user register!");
+          res.status(401).send({ error: "There was an error on user register!" });
+        } else {
+          next();
+        }
+      });
     }
-};
 
-router.get('/home', authRequired, (req, res) => {
-    res.status(200).send({message: 'You are at HOME PAGE!'});
-});
-
-router.get('/login', (req, res) => {
-    res.status(200).send({message: 'You are at LOGIN PAGE!'});
-});
-
-
-router.get("/register", authRequired, controller.register);
-
-router.post("/register", (req, res, next) => {
-  const { body } = req;
-  const user = new User({
-    username: body.username,
-    password: body.password,
-  });
-  user.save((err) => {
-    if (err) {
-      console.log("There was an error on user register!");
-      res.status(401).send({ error: "There was an error on user register!" });
-    } 
-    next();
-  });
-}, authenticateAfterRegister);
-
+  },
+  authenticateAfterRegister
+);
 
 router.post("/login", authenticateAfterLogin);
 
 router.get("/logOut", (req, res) => {
-    req.logout();
-    res.status(200).send({message: "Logged Out successfully!"});
+  req.logout();
+  res.status(200).send({ message: "Logged Out successfully!" });
 });
 
 module.exports = router;

@@ -1,3 +1,14 @@
+const passport = require("passport");
+
+const authenticateAfterLogin = passport.authenticate("local", {
+  successRedirect: "/home",
+  failureRedirect: "/login",
+});
+
+const authenticateAfterRegister = passport.authenticate("local", {
+  successRedirect: "/login",
+});
+
 const authRequired = (req, res, next) => {
   if (req.user) {
     next();
@@ -8,4 +19,6 @@ const authRequired = (req, res, next) => {
 
 module.exports = {
   authRequired,
+  authenticateAfterLogin,
+  authenticateAfterRegister
 };
