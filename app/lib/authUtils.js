@@ -10,7 +10,7 @@ const authenticateAfterRegister = passport.authenticate("local", {
 });
 
 const authRequired = (req, res, next) => {
-  if (req.user) {
+  if (AUTH_STATUS) {
     next();
   } else {
     res.status(401).send({ message: "Unauthorized!" });
@@ -20,5 +20,5 @@ const authRequired = (req, res, next) => {
 module.exports = {
   authRequired,
   authenticateAfterLogin,
-  authenticateAfterRegister
+  authenticateAfterRegister,
 };

@@ -3,11 +3,6 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema(
   {
-    userId: {
-      type: Number,
-      unique: true,
-      require: true,
-    },
     username: {
       type: String,
       unique: true,
@@ -17,9 +12,18 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     cpf: {
       type: Number,
       required: true,
+    },
+    checkingAccountAmount: {
+      type: Number,
+      require: false,
+      default: 0,
     }
   },
   {
@@ -44,13 +48,13 @@ userSchema.methods.authenticate = function (password) {
 userSchema.statics.authenticate = function (username, password, done) {
   this.findOne({ username }, function (err, user) {
     if (err) {
-      console.log("Error attempting to use static authenticate function", err);
+      console.log("Error attempting to authenticate", err);
       done(err);
     } else if (user && user.authenticate(password)) {
-      console.log("This should be a successful login.");
+      console.log("Successful login.");
       done(null, user);
     } else {
-      console.log("Probably got their password wrong");
+      console.log("Password wrong");
       done(null, false);
     }
   });

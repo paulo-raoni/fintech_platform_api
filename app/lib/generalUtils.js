@@ -1,6 +1,6 @@
 
-const calculateConsolidatedAmount = (financeData) => {
-    const {checkingAccountAmount, positions} = financeData;
+const calculateConsolidatedAmount = (walletData) => {
+    const {checkingAccountAmount, positions} = walletData;
     let consolidatedAmount = checkingAccountAmount;
 
     for (const p of positions) {
