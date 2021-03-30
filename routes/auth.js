@@ -24,6 +24,7 @@ router.post("/login", (req, res, next) => {
   let user;
   User.findOne({ username: req.body.username })
     .then((record) => {
+      if(!record) return res.status(200).send({ user: "User does not exist!" });
       user = record;
       AUTH_STATUS = true;
       res.status(200).send({ user });
