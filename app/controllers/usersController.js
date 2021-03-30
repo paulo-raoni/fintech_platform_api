@@ -5,6 +5,8 @@ const {
   registerValidator,
 } = require("../validators/generalValidator");
 
+
+// For future implementation
 const getUserData = async (req, res) => {
   try {
     const body = req.body;
@@ -17,10 +19,10 @@ const getUserData = async (req, res) => {
   }
 };
 
+// For future implementation
 const addAccountAmount = async (req, res) => {
   try {
-    const body = req.body;
-    if (!body) throw new Error("Body is empty.");
+    
     const id = mongoose.Types.ObjectId(body.id);
     const user = await userService.getUser(id);
     res.status(200).send(user);
