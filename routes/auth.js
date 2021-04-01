@@ -1,5 +1,25 @@
 const router = require("express").Router();
 const User = require("../app/models/userSchema");
+const {
+  authRequired,
+  authenticateAfterLogin,
+} = require("../app/lib/authUtils");
+
+
+router.get("/home", authRequired, (req, res) => {
+  res.status(200).send({ message: "You are at HOME PAGE!" });
+});
+
+router.get("/login", authRequired, (req, res) => {
+  if (req.user) {
+    req.logout(); //logout to prevent login after register
+  }
+});
+
+router.get("/register", authRequired, (req, res) => {
+  res.status(200).send({ response: "You are at REGISTER!" });
+});
+
 
 router.post("/login", (req, res, next) => {
   let user;
@@ -11,7 +31,7 @@ router.post("/login", (req, res, next) => {
       res.status(200).send({ user });
     })
     .catch(next);
-});
+}, authenticateAfterLogin);
 
 router.get("/logOut", (req, res) => {
   try {

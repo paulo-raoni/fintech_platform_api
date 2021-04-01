@@ -33,21 +33,35 @@ const getPositions = async (req, res) => {
   }
 };
 
-const postPositions = async (req, res) => {
+const postOrders = async (req, res) => {
   try {
     if (!req.body) throw new Error("Body is empty!");
     const body = req.body;
     const id = mongoose.Types.ObjectId(body.id);
-    const user = await userService.getUser(id);
+    const { symbol, amount} = body;
+    const user = await userService.getUser(id);    
 
     if (!user.username) throw new Error("User does not exist!");
 
-    const payloadResponse = await positionService.postPositionsService({
-      owner: body.id,
-      positions: body.positions,
-    });
+    const trends = positionService.getTrends();
 
-    res.status(201).send(payloadResponse);
+    const stock = trends.find((p) => p.symbol === symbol);
+
+    if(stock) {
+      console.log(`stock ${stock}`);
+      const buyAmount = amount * stock.currentPrice;
+      if(user.checkingAccountAmount >= buyAmount) {
+        res.status(201).send(stock);
+      } else {
+        res.status(400).send({msg: "Not enough money!"});
+      }
+     
+    } else {
+        console.log(` ${stock}`);
+        res.status(400).send({msn: "Stock not found!"});
+    }
+
+    
   } catch (error) {
     res.status(400).send({ error: error.message || error });
   }
@@ -55,5 +69,5 @@ const postPositions = async (req, res) => {
 
 module.exports = {
   getPositions,
-  postPositions,
+  postOrders,
 };
